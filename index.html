@@ -5,9 +5,63 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Stuff Sorter</title>
+    <style>
+        #mainTable {
+            font-size: 16px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            text-align: center;
+            vertical-align: middle;
+            width: 410px;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: separate;
+            border-spacing: 10px 5px;
+        }
+
+        #leftField {
+            width: 120px;
+            height: 150px;
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+
+        #rightField {
+            width: 120px;
+            height: 150px;
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+
+        .middleField {
+            width: 120px;
+            height: 70px;
+            border: 1px solid rgba(0, 0, 0, 1);
+        }
+    </style>
 </head>
 
 <body>
+    <table id="mainTable" align="center">
+        <tr>
+            <td id="battleNumber" colspan="3" style="padding-bottom: 10px;">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td id="leftField" onClick="" rowspan="2">
+                &nbsp;
+            </td>
+            <td class="middleField" onClick="">
+                I like both
+            </td>
+            <td id="rightField" onClick="" rowspan="2">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td class="middleField" onClick="">
+                No opinion
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
