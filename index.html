@@ -25,6 +25,13 @@
 
         // set up the lstMember array
         function initList() {
+            // shuffle the initial array so every run will be different
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * i)
+                const temp = items[i]
+                items[i] = items[j]
+                items[j] = temp
+            }
             var n = 0;
 
             // set lstMember[0] to the initial sequence that is being sorted
@@ -201,8 +208,10 @@
 
         // update the page with the current comparison
         function showCurrentComparison() {
+            percent = Math.floor(progress * 100 / totalSize);
             document.getElementById("battleNumber").innerHTML =
-                "Comparison #" + currentQuestion + "<br>" + Math.floor(progress * 100 / totalSize) + "% sorted.";
+                "Comparison #" + currentQuestion + "<br>" + percent + "% sorted, ~" + 
+                Math.floor(currentQuestion*(100/percent)-currentQuestion) +" left";
             document.getElementById("leftField").innerHTML = items[lstMember[comparison1][head1]];
             document.getElementById("rightField").innerHTML = items[lstMember[comparison2][head2]];
             currentQuestion++;
@@ -213,7 +222,6 @@
             font-size: 19px;
             text-align: center;
             vertical-align: middle;
-            width: 410px;
             margin-left: auto;
             margin-right: auto;
             border-collapse: separate;
@@ -221,14 +229,14 @@
         }
 
         #leftField {
-            width: 120px;
+            width: 240px;
             height: 150px;
             border: 1px solid #000;
             cursor: pointer;
         }
 
         #rightField {
-            width: 120px;
+            width: 240px;
             height: 150px;
             border: 1px solid #000;
             cursor: pointer;
@@ -242,7 +250,6 @@
         }
 
         #resultField>table {
-            width: 200px;
             font-size: 18px;
             line-height: 120%;
             margin-left: auto;
