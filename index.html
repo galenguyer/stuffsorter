@@ -5,10 +5,212 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Stuff Sorter</title>
-    <style>
+    <script type="text/javascript">
+        // create the list of items to sort
+        var items = new Array(
+            "A", "B", "C", "D"
+        );
+
+        var lstMember = new Array();
+        var parent = new Array();
+        var equal = new Array();
+        var rec = new Array();
+        var comparison1, comparison2;
+        var head1 = 0, head2 = 0;
+        var nrec = 0;
+        var currentQuestion = 1;
+        var progress = 0;
+        var finishFlag = 0;
+        var totalSize;
+
+        // set up the lstMember array
+        function initList() {
+            var n = 0;
+
+            // set lstMember[0] to the initial sequence that is being sorted
+            lstMember[n] = new Array();
+            for (var i = 0; i < items.length; i++) {
+                lstMember[n][i] = i;
+            }
+            parent[n] = -1;
+            totalSize = 0;
+            n++;
+            for (var i = 0; i < lstMember.length; i++) {
+                //And element divides it in two/more than two
+                //Increase divided sequence of last in first member
+                console.debug('i', i, 'n', n)
+                if (lstMember[i].length > 1) {
+                    console.log(mid)
+                    var mid = Math.ceil(lstMember[i].length / 2);
+                    lstMember[n] = new Array();
+                    lstMember[n] = lstMember[i].slice(0, mid);
+                    totalSize += lstMember[n].length;
+                    parent[n] = i;
+                    n++;
+                    lstMember[n] = new Array();
+                    lstMember[n] = lstMember[i].slice(mid, lstMember[i].length);
+                    totalSize += lstMember[n].length;
+                    parent[n] = i;
+                    n++;
+                }
+            }
+
+            //Preserve this sequence
+            for (i = 0; i < items.length; i++) {
+                rec[i] = 0;
+            }
+
+            //List that keeps your results
+            //Value of link initial
+            // Value of link initial
+            for (i = 0; i <= items.length; i++) {
+                equal[i] = -1;
+            }
+
+            comparison1 = lstMember.length - 2;
+            comparison2 = lstMember.length - 1;
+        }
+
+
+        function sortList(flag) {
+            if (finishFlag != 0) {
+                return;
+            }
+            var i;
+            var str;
+            // left option was chosen
+            if (flag < 0) {
+                rec[nrec] = lstMember[comparison1][head1];
+                head1++;
+                nrec++;
+                progress++;
+                while (equal[rec[nrec - 1]] != -1) {
+                    rec[nrec] = lstMember[comparison1][head1];
+                    head1++;
+                    nrec++;
+                    progress++;
+                }
+            }
+            // right option was chosen
+            else if (flag > 0) {
+                rec[nrec] = lstMember[comparison2][head2];
+                head2++;
+                nrec++;
+                progress++;
+                while (equal[rec[nrec - 1]] != -1) {
+                    rec[nrec] = lstMember[comparison2][head2];
+                    head2++;
+                    nrec++;
+                    progress++;
+                }
+            }
+            // tie was chosen
+            else {
+                rec[nrec] = lstMember[comparison1][head1];
+                head1++;
+                nrec++;
+                progress++;
+                while (equal[rec[nrec - 1]] != -1) {
+                    rec[nrec] = lstMember[comparison1][head1];
+                    head1++;
+                    nrec++;
+                    progress++;
+                }
+                equal[rec[nrec - 1]] = lstMember[comparison2][head2];
+                rec[nrec] = lstMember[comparison2][head2];
+                head2++;
+                nrec++;
+                progress++;
+                while (equal[rec[nrec - 1]] != -1) {
+                    rec[nrec] = lstMember[comparison2][head2];
+                    head2++;
+                    nrec++;
+                    progress++;
+                }
+            }
+
+            //Processing after finishing with one list
+            if (head1 < lstMember[comparison1].length && head2 == lstMember[comparison2].length) {
+                //List the remainder of comparison2 copies, list comparison1 copies when finished scanning
+                while (head1 < lstMember[comparison1].length) {
+                    rec[nrec] = lstMember[comparison1][head1];
+                    head1++;
+                    nrec++;
+                    progress++;
+                }
+            }
+            else if (head1 == lstMember[comparison1].length && head2 < lstMember[comparison2].length) {
+                //List the remainder of comparison1 copies, list comparison2 copies when finished scanning
+                while (head2 < lstMember[comparison2].length) {
+                    rec[nrec] = lstMember[comparison2][head2];
+                    head2++;
+                    nrec++;
+                    progress++;
+                }
+            }
+            //When it arrives at the end of both lists
+            //Update a pro list
+            if (head1 == lstMember[comparison1].length && head2 == lstMember[comparison2].length) {
+                for (i = 0; i < lstMember[comparison1].length + lstMember[comparison2].length; i++) {
+                    lstMember[parent[comparison1]][i] = rec[i];
+                }
+                lstMember.pop();
+                lstMember.pop();
+                comparison1 = comparison1 - 2;
+                comparison2 = comparison2 - 2;
+                head1 = 0;
+                head2 = 0;
+                //Initialize the rec before performing the new comparison
+                for (i = 0; i < items.length; i++) {
+                    rec[i] = 0;
+                }
+                nrec = 0;
+            }
+            if (comparison1 < 0) {
+                str = "Battle #" + (currentQuestion - 1) + "<br>" + Math.floor(progress * 100 / totalSize) + "% sorted.";
+                document.getElementById("battleNumber").innerHTML = str;
+                showResult();
+                finishFlag = 1;
+            }
+            else {
+                showCurrentComparison();
+            }
+        }
+
+        function showResult() {
+            var ranking = 1;
+            var sameRank = 1;
+            var i;
+            var result = '<table align="center">';
+            result += "<tr><th>Rank</th><th>Character</th></tr>";
+            for (i = 0; i < items.length; i++) {
+                result += "<tr><td>" + ranking + "</td><td>" + items[lstMember[0][i]] + "</td></tr>";
+                if (i < items.length - 1) {
+                    if (equal[lstMember[0][i]] == lstMember[0][i + 1]) {
+                        sameRank++;
+                    } else {
+                        ranking += sameRank;
+                        sameRank = 1;
+                    }
+                }
+            }
+            result += "</table>";
+            document.getElementById("resultField").innerHTML = result;
+        }
+
+        // update the page with the current comparison
+        function showCurrentComparison() {
+            document.getElementById("battleNumber").innerHTML =
+                "Comparison #" + currentQuestion + "<br>" + Math.floor(progress * 100 / totalSize) + "% sorted.";
+            document.getElementById("leftField").innerHTML = items[lstMember[comparison1][head1]];
+            document.getElementById("rightField").innerHTML = items[lstMember[comparison2][head2]];
+            currentQuestion++;
+        }
+
+    </script>
+    <style type="text/css">
         #mainTable {
-            font-size: 16px;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 19px;
             text-align: center;
             vertical-align: middle;
             width: 410px;
@@ -21,47 +223,82 @@
         #leftField {
             width: 120px;
             height: 150px;
-            border: 1px solid rgba(0, 0, 0, 1);
+            border: 1px solid #000;
+            cursor: pointer;
         }
 
         #rightField {
             width: 120px;
             height: 150px;
-            border: 1px solid rgba(0, 0, 0, 1);
+            border: 1px solid #000;
+            cursor: pointer;
         }
 
         .middleField {
             width: 120px;
             height: 70px;
-            border: 1px solid rgba(0, 0, 0, 1);
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+
+        #resultField>table {
+            width: 200px;
+            font-size: 18px;
+            line-height: 120%;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #000;
+            border-collapse: collapse;
+        }
+
+        #resultField>table>tbody>tr>th {
+            color: #ffffff;
+            background-color: #000;
+            text-align: center;
+        }
+
+        #resultField>table>tbody>tr>td {
+            border: 1px solid #000;
+            text-align: center;
+            padding-right: 5px;
+        }
+
+        body {
+            width: 600px;
+            margin: 0 auto;
         }
     </style>
 </head>
 
 <body>
-    <table id="mainTable" align="center">
-        <tr>
-            <td id="battleNumber" colspan="3" style="padding-bottom: 10px;">
-                &nbsp;
-            </td>
-        </tr>
-        <tr>
-            <td id="leftField" onClick="" rowspan="2">
-                &nbsp;
-            </td>
-            <td class="middleField" onClick="">
-                I like both
-            </td>
-            <td id="rightField" onClick="" rowspan="2">
-                &nbsp;
-            </td>
-        </tr>
-        <tr>
-            <td class="middleField" onClick="">
-                No opinion
-            </td>
-        </tr>
-    </table>
+    <table id="mainTable">
+        <tbody>
+            <tr>
+                <td id="battleNumber" colspan="3" style="padding-bottom: 10px;" style="text-align:center;">
+                    <b>Battle #1<br>0% sorted.</b>
+                </td>
+            </tr>
+            <tr>
+                <td id="leftField" onclick="sortList(-1);" rowspan="2" style="text-align:center;">
+                </td>
+                <td class="middleField" onclick="sortList(0);" style="text-align:center;">
+                    I Like Both
+                </td>
+                <td id="rightField" onclick="sortList(1);" rowspan="2" style="text-align:center;">
+                </td>
+            </tr>
+            <tr>
+                <td class="middleField" onclick="sortList(0);" style="text-align:center;">
+                    No Opinion
+                </td>
+            </tr>
+        </tbody>
+    </table><br><br>
+    <div id="resultField" style="text-align: center;"><br></div>
+    <script type="text/javascript">
+        initList();
+        showCurrentComparison();
+    </script>
 </body>
 
 </html>
