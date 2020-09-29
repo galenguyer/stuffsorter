@@ -196,6 +196,7 @@
             }
             result += "</table>";
             document.getElementById("resultField").innerHTML = result;
+            document.getElementById("mainTable").innerHTML = "";
         }
 
         // update the page with the current comparison
@@ -206,7 +207,6 @@
             document.getElementById("rightField").innerHTML = items[lstMember[comparison2][head2]];
             currentQuestion++;
         }
-
     </script>
     <style type="text/css">
         #mainTable {
